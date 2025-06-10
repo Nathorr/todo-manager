@@ -1,6 +1,9 @@
+**Repository**: [https://github.com/yishentu/clean-done-todos](https://github.com/yishentu/clean-done-todos)
+
 # Clean Done Todos
 
-Delete completed checklist items that are older than **N** days.  
+Delete completed checklist items that are older than **N** days, a supplement plugin to the [Task](https://github.com/obsidian-tasks-group/obsidian-tasks).
+
 A completed item must follow the pattern:
 
 ```markdown
