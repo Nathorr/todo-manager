@@ -1,0 +1,11 @@
+{
+	"id": "clean-done-todos",
+	"name": "Clean Done Todos",
+	"version": "1.0.0",
+	"minAppVersion": "0.15.0",
+	"description": "Delete completed checklist items (✅ YYYY-MM-DD) that are older than N days.",
+	"author": "Obsidian",
+	"authorUrl": "https://obsidian.md",
+	"fundingUrl": "https://obsidian.md/pricing",
+	"isDesktopOnly": false
+}
