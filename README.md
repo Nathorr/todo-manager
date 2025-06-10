@@ -44,10 +44,3 @@ Click the button; every line that matches the pattern above and whose date is ol
 Press <kbd>Cmd/Ctrl</kbd> + <kbd>P</kbd>, search for
 **Clean current note of done todos**, and run it.
 This does exactly the same cleanup without needing the in-note button.
-
----
-
-Made for Obsidian v1.5 + • Powered by TypeScript and Moment.js
-
-```
-```
