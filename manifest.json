@@ -7,5 +7,6 @@
 	"author": "YT",
 	"authorUrl": "https://github.com/yishentu",
 	"fundingUrl": "",
-	"isDesktopOnly": false
+	"isDesktopOnly": false,
+	"styles": "styles.css"
 }

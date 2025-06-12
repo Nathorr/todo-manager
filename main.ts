@@ -37,13 +37,14 @@ export default class CleanDoneTodosPlugin extends Plugin {
 		this.registerMarkdownPostProcessor(
 			(el: HTMLElement, ctx: MarkdownPostProcessorContext) => {
 				el.querySelectorAll<HTMLButtonElement>("button.clean-done-btn").forEach(btn => {
-					if ((btn as any)._bound) return;          // prevent duplicate binding
-					(btn as any)._bound = true;
+					if (btn.dataset.bound) return;          // prevent duplicate binding
+					btn.dataset.bound = 'true';
 
 					btn.addEventListener("click", async () => {
 						const file = this.app.vault.getAbstractFileByPath(
 							ctx.sourcePath,
-						) as TFile | null;
+						);
+						if (!(file instanceof TFile)) return;
 						await this.cleanFile(file);
 					});
 				});
@@ -116,14 +117,29 @@ class CleanDoneTodosSettingTab extends PluginSettingTab {
 
 		/* Embedded-button usage instructions */
 		const info = document.createElement("div");
-		info.style.marginTop = "1.2em";
-		info.style.lineHeight = "1.6";
-		// Replace the old innerHTML assignment with this one
-		info.innerHTML =
-  		`<strong>Embedded button:</strong><br/>
-   		Add the line below anywhere in a note, switch to Reading View (or leave Live Preview),<br/>
-   		then click it to clean the current note:<br/>
-   		<code style="display:block;margin-top:0.6em;">&lt;button class="clean-done-btn"&gt;🧹 Clean Done Todos&lt;/button&gt;</code>`;
+		info.addClass("clean-done-todos-info");
+		// Create content using DOM API instead of innerHTML
+		const strong = document.createElement("strong");
+		strong.textContent = "Embedded button:";
+		
+		const br1 = document.createElement("br");
+		const text1 = document.createTextNode("Add the line below anywhere in a note, switch to Reading View (or leave Live Preview),");
+		
+		const br2 = document.createElement("br");
+		const text2 = document.createTextNode("then click it to clean the current note:");
+		
+		const br3 = document.createElement("br");
+		const code = document.createElement("code");
+		code.addClass("clean-done-todos-code");
+		code.textContent = '<button class="clean-done-btn">🧹 Clean Done Todos</button>';
+		
+		info.appendChild(strong);
+		info.appendChild(br1);
+		info.appendChild(text1);
+		info.appendChild(br2);
+		info.appendChild(text2);
+		info.appendChild(br3);
+		info.appendChild(code);
 
 		containerEl.appendChild(info);
 	}
