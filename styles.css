@@ -7,3 +7,89 @@
 	display: block;
 	margin-top: 0.6em;
 }
+
+.todo-input-bar {
+	margin: 1em 0;
+	padding: 1em;
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 6px;
+	background: var(--background-secondary);
+	max-width: 100%;
+	box-sizing: border-box;
+}
+
+.todo-input-group {
+	display: flex;
+	gap: 0.75em;
+	align-items: stretch;
+}
+
+.todo-input-section {
+	flex: 68;
+	display: flex;
+	gap: 0.5em;
+	align-items: center;
+}
+
+.todo-clean-section {
+	flex: 32;
+	display: flex;
+	align-items: center;
+}
+
+.todo-input {
+	flex: 1;
+	padding: 0.5em;
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 4px;
+	background: var(--background-primary);
+	color: var(--text-normal);
+	font-size: 0.9em;
+}
+
+.todo-input:focus {
+	outline: none;
+	border-color: var(--interactive-accent);
+	box-shadow: 0 0 0 2px var(--interactive-accent-hover);
+}
+
+.todo-add-btn {
+	padding: 0.5em 1em;
+	border: none;
+	border-radius: 4px;
+	background: var(--interactive-accent);
+	color: var(--text-on-accent);
+	cursor: pointer;
+	font-size: 0.9em;
+	white-space: nowrap;
+}
+
+.todo-add-btn:hover {
+	background: var(--interactive-accent-hover);
+}
+
+.todo-add-btn:active {
+	transform: translateY(1px);
+}
+
+.todo-clean-btn {
+	width: 100%;
+	padding: 0.5em 1em;
+	border: none;
+	border-radius: 4px;
+	background: var(--background-modifier-border);
+	color: var(--text-normal);
+	cursor: pointer;
+	font-size: 0.9em;
+	white-space: nowrap;
+	border: 1px solid var(--background-modifier-border-hover);
+}
+
+.todo-clean-btn:hover {
+	background: var(--background-modifier-hover);
+	border-color: var(--background-modifier-border-focus);
+}
+
+.todo-clean-btn:active {
+	transform: translateY(1px);
+}

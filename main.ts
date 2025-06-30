@@ -6,15 +6,18 @@ import {
 	moment,
 	Notice,
 	TFile,
-	MarkdownPostProcessorContext,
 } from "obsidian";
 
 /* ---------- Settings ---------- */
 interface CleanDoneTodosSettings {
 	daysThreshold: number; // Keep items completed within the last N days
+	todoNoteFilename: string; // Target note for new todos
 }
 
-const DEFAULT_SETTINGS: CleanDoneTodosSettings = { daysThreshold: 5 };
+const DEFAULT_SETTINGS: CleanDoneTodosSettings = { 
+	daysThreshold: 5,
+	todoNoteFilename: "Todo.md"
+};
 
 /* ---------- Main Plugin ---------- */
 export default class CleanDoneTodosPlugin extends Plugin {
@@ -23,33 +26,71 @@ export default class CleanDoneTodosPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 
-		/* Command palette entry */
-		this.addCommand({
-			id: "clean-done-todos",
-			name: "Clean done todos in current note",
-			callback: () => this.cleanFile(this.app.workspace.getActiveFile()),
-		});
+
 
 		/* Settings tab */
 		this.addSettingTab(new CleanDoneTodosSettingTab(this.app, this));
 
-		/* Bind <button class="clean-done-btn"> in rendered Markdown */
-		this.registerMarkdownPostProcessor(
-			(el: HTMLElement, ctx: MarkdownPostProcessorContext) => {
-				el.querySelectorAll<HTMLButtonElement>("button.clean-done-btn").forEach(btn => {
-					if (btn.dataset.bound) return;          // prevent duplicate binding
-					btn.dataset.bound = 'true';
 
-					btn.addEventListener("click", async () => {
-						const file = this.app.vault.getAbstractFileByPath(
-							ctx.sourcePath,
-						);
-						if (!(file instanceof TFile)) return;
-						await this.cleanFile(file);
-					});
-				});
-			},
-		);
+		/* Register code block processor for todo-input */
+		this.registerMarkdownCodeBlockProcessor("todo-input", (source, el, ctx) => {
+			const container = el.createDiv("todo-input-bar");
+			
+			const inputGroup = container.createDiv("todo-input-group");
+			
+			// Input section (2/3 width)
+			const inputSection = inputGroup.createDiv("todo-input-section");
+			const input = inputSection.createEl("input", {
+				type: "text",
+				placeholder: "Add a new todo item...",
+				cls: "todo-input"
+			});
+
+			const addButton = inputSection.createEl("button", {
+				text: "Add",
+				cls: "todo-add-btn"
+			});
+
+			// Clean button section (1/3 width)
+			const cleanSection = inputGroup.createDiv("todo-clean-section");
+			const cleanButton = cleanSection.createEl("button", {
+				text: "🧹 Clean",
+				cls: "todo-clean-btn"
+			});
+
+			// Bind events directly here
+			const addTodo = async () => {
+				const text = input.value.trim();
+				if (text) {
+					try {
+						await this.addTodoItem(text);
+						input.value = '';
+						input.focus();
+					} catch (error) {
+						new Notice("Error adding todo: " + error.message);
+					}
+				} else {
+					new Notice("Please enter some text for the todo item");
+				}
+			};
+
+			const cleanTodos = async () => {
+				try {
+					await this.cleanTodoFile();
+				} catch (error) {
+					new Notice("Error cleaning todos: " + error.message);
+				}
+			};
+
+			addButton.addEventListener("click", addTodo);
+			cleanButton.addEventListener("click", cleanTodos);
+			input.addEventListener("keydown", (e) => {
+				if (e.key === "Enter") {
+					e.preventDefault();
+					addTodo();
+				}
+			});
+		});
 	}
 
 	/* ---------- Cleanup logic ---------- */
@@ -86,6 +127,42 @@ export default class CleanDoneTodosPlugin extends Plugin {
 	async saveSettings() {
 		await this.saveData(this.settings);
 	}
+
+	async addTodoItem(todoText: string) {
+		const todoFile = this.app.vault.getAbstractFileByPath(this.settings.todoNoteFilename);
+		
+		if (!(todoFile instanceof TFile)) {
+			new Notice(`Todo note "${this.settings.todoNoteFilename}" not found. Please check the filename in settings.`);
+			return;
+		}
+
+		const content = await this.app.vault.read(todoFile);
+		const todoItem = `- [ ] ${todoText}\n`;
+		
+		// Find where to insert (after frontmatter if it exists)
+		const frontmatterMatch = content.match(/^---\n[\s\S]*?\n---\n/);
+		let insertPosition = 0;
+		
+		if (frontmatterMatch) {
+			insertPosition = frontmatterMatch[0].length;
+		}
+		
+		const newContent = content.slice(0, insertPosition) + todoItem + content.slice(insertPosition);
+		
+		await this.app.vault.modify(todoFile, newContent);
+		new Notice(`Todo added to ${this.settings.todoNoteFilename}`);
+	}
+
+	async cleanTodoFile() {
+		const todoFile = this.app.vault.getAbstractFileByPath(this.settings.todoNoteFilename);
+		
+		if (!(todoFile instanceof TFile)) {
+			new Notice(`Todo note "${this.settings.todoNoteFilename}" not found. Please check the filename in settings.`);
+			return;
+		}
+
+		await this.cleanFile(todoFile);
+	}
 }
 
 /* ---------- Settings Tab ---------- */
@@ -115,32 +192,42 @@ class CleanDoneTodosSettingTab extends PluginSettingTab {
 					}),
 			);
 
-		/* Embedded-button usage instructions */
+		/* Usage instructions */
 		const info = document.createElement("div");
 		info.addClass("clean-done-todos-info");
-		// Create content using DOM API instead of innerHTML
+		
 		const strong = document.createElement("strong");
-		strong.textContent = "Embedded button:";
+		strong.textContent = "Todo input bar:";
 		
 		const br1 = document.createElement("br");
-		const text1 = document.createTextNode("Add the line below anywhere in a note, switch to Reading View (or leave Live Preview),");
+		const text = document.createTextNode("Add this code block anywhere in a note to get an input bar with add and clean functions:");
 		
 		const br2 = document.createElement("br");
-		const text2 = document.createTextNode("then click it to clean the current note:");
-		
-		const br3 = document.createElement("br");
 		const code = document.createElement("code");
 		code.addClass("clean-done-todos-code");
-		code.textContent = '<button class="clean-done-btn">🧹 Clean Done Todos</button>';
+		code.textContent = '```todo-input\n\n```';
 		
 		info.appendChild(strong);
 		info.appendChild(br1);
-		info.appendChild(text1);
+		info.appendChild(text);
 		info.appendChild(br2);
-		info.appendChild(text2);
-		info.appendChild(br3);
 		info.appendChild(code);
+
+		/* Todo note filename setting */
+		new Setting(containerEl)
+			.setName("Todo note filename")
+			.setDesc("The filename of the note where new todo items will be added.")
+			.addText(text =>
+				text
+					.setPlaceholder("Todo.md")
+					.setValue(this.plugin.settings.todoNoteFilename)
+					.onChange(async value => {
+						this.plugin.settings.todoNoteFilename = value.trim() || "Todo.md";
+						await this.plugin.saveSettings();
+					}),
+			);
 
 		containerEl.appendChild(info);
 	}
 }
+
