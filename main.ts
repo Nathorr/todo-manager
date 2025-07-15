@@ -6,6 +6,7 @@ import {
 	moment,
 	Notice,
 	TFile,
+	getFrontMatterInfo,
 } from "obsidian";
 
 /* ---------- Settings ---------- */
@@ -100,24 +101,26 @@ export default class CleanDoneTodosPlugin extends Plugin {
 			return;
 		}
 
-		const raw = await this.app.vault.read(file);
 		const cutoff = moment().startOf("day").subtract(this.settings.daysThreshold, "days");
 
 		// Matches: - [x] ... ✅ YYYY-MM-DD
 		const doneLineRegex =
 			/- \[x\][\s\S]*?✅\s*(\d{4}-\d{2}-\d{2}).*?(?:\n|$)/gi;
 
-		const cleaned = raw.replace(doneLineRegex, (whole, dateStr: string) => {
-			const doneDate = moment(dateStr, "YYYY-MM-DD", true);
-			return doneDate.isValid() && doneDate.isBefore(cutoff) ? "" : whole;
-		});
+		await this.app.vault.process(file, (data) => {
+			const cleaned = data.replace(doneLineRegex, (whole, dateStr: string) => {
+				const doneDate = moment(dateStr, "YYYY-MM-DD", true);
+				return doneDate.isValid() && doneDate.isBefore(cutoff) ? "" : whole;
+			});
 
-		if (cleaned !== raw) {
-			await this.app.vault.modify(file, cleaned);
-			new Notice(`Removed tasks completed more than ${this.settings.daysThreshold} day(s) ago.`);
-		} else {
-			new Notice("Nothing to clean: no matching lines.");
-		}
+			if (cleaned !== data) {
+				new Notice(`Removed tasks completed more than ${this.settings.daysThreshold} day(s) ago.`);
+				return cleaned;
+			} else {
+				new Notice("Nothing to clean: no matching lines.");
+				return data;
+			}
+		});
 	}
 
 	/* ---------- Settings I/O ---------- */
@@ -136,21 +139,21 @@ export default class CleanDoneTodosPlugin extends Plugin {
 			return;
 		}
 
-		const content = await this.app.vault.read(todoFile);
-		const todoItem = `- [ ] ${todoText}\n`;
-		
-		// Find where to insert (after frontmatter if it exists)
-		const frontmatterMatch = content.match(/^---\n[\s\S]*?\n---\n/);
-		let insertPosition = 0;
-		
-		if (frontmatterMatch) {
-			insertPosition = frontmatterMatch[0].length;
-		}
-		
-		const newContent = content.slice(0, insertPosition) + todoItem + content.slice(insertPosition);
-		
-		await this.app.vault.modify(todoFile, newContent);
-		new Notice(`Todo added to ${this.settings.todoNoteFilename}`);
+		await this.app.vault.process(todoFile, (data) => {
+			const todoItem = `- [ ] ${todoText}\n`;
+			
+			// Find where to insert (after frontmatter if it exists)
+			const frontmatterInfo = getFrontMatterInfo(data);
+			let insertPosition = 0;
+			
+			if (frontmatterInfo.exists) {
+				insertPosition = frontmatterInfo.contentStart;
+			}
+			
+			const newContent = data.slice(0, insertPosition) + todoItem + data.slice(insertPosition);
+			new Notice(`Todo added to ${this.settings.todoNoteFilename}`);
+			return newContent;
+		});
 	}
 
 	async cleanTodoFile() {

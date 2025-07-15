@@ -1,12 +1,10 @@
 {
-	"id": "clean-done-todos",
-	"name": "Clean Done Todos",
+	"id": "todo-manager",
+	"name": "TODO Manager",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "Delete completed checklist items (✅ YYYY-MM-DD) that are older than N days.",
+	"description": "Manage todo items with integrated input bar and automatic cleanup of completed tasks older than N days.",
 	"author": "YT",
 	"authorUrl": "https://github.com/yishentu",
-	"fundingUrl": "",
-	"isDesktopOnly": false,
-	"styles": "styles.css"
+	"isDesktopOnly": false
 }

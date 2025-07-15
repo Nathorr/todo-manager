@@ -1,8 +1,8 @@
-**Repository**: [https://github.com/yishentu/clean-done-todos](https://github.com/yishentu/clean-done-todos)
+**Repository**: [https://github.com/yishentu/todo-manager](https://github.com/yishentu/todo-manager)
 
-# Clean Done Todos
+# TODO Manager
 
-Delete completed checklist items that are older than **N** days, a supplement plugin to the [Task](https://github.com/obsidian-tasks-group/obsidian-tasks).
+Manage todo items with integrated input bar and automatic cleanup of completed tasks older than **N** days, a supplement plugin to the [Task](https://github.com/obsidian-tasks-group/obsidian-tasks).
 
 A completed item must follow the pattern:
 
@@ -12,38 +12,43 @@ A completed item must follow the pattern:
 
 ## Features
 
+* **Todo input bar** – Add new todo items directly from any note with an embedded input interface.
 * **Age-based cleanup** – keeps only items finished within the last *N* days.
-* **In-note button** – embed a clickable button directly inside any note.
-* **Command palette support** – trigger cleanup with a shortcut or the command panel.
-* **Non-destructive** – affects only the current note; nothing else in the vault is touched.
+* **Integrated functionality** – combine todo input and cleanup in a single interface.
+* **Non-destructive** – affects only the specified todo note; nothing else in the vault is touched.
 
 ## Installation
 
 1. Clone or copy the plugin folder into
    `YOUR_VAULT/.obsidian/plugins/clean-done-todos`.
-2. Enable “Third-party plugins” in **Settings → Community plugins**.
-3. Find **Clean Done Todos** in the list and toggle it on.
+2. Enable "Third-party plugins" in **Settings → Community plugins**.
+3. Find **TODO Manager** in the list and toggle it on.
 
 ## Configuration
 
-Open **Settings → Community plugins → Clean Done Todos** and set **Keep the last N days**
-(e.g. entering `7` keeps everything completed today or in the previous six days).
+Open **Settings → Community plugins → TODO Manager** and configure:
+- **Keep the last N days** (e.g. entering `7` keeps everything completed today or in the previous six days)
+- **Todo note filename** (the file where new todos will be added, default: "Todo.md")
 
 ## Usage
 
-### Embedded button
+### Todo Input Bar
 
-Add this line anywhere inside a note:
+Add this code block anywhere inside a note:
 
 ```markdown
-<button class="clean-done-btn">🧹 Clean Done Todos</button>
+```todo-input
+
 ```
 
-Switch to Reading View (or move the cursor away in Live Preview).
-Click the button; every line that matches the pattern above and whose date is older than *N* days is removed.
+![TODO Manager Demo](todo-manager-demo.png)
 
-### Command palette
+This creates an input bar with:
+- **Text input** – Type your new todo item
+- **Add button** – Adds the todo to your specified todo note file
+- **Clean button** – Removes completed todos older than N days from the todo note
 
-Press <kbd>Cmd/Ctrl</kbd> + <kbd>P</kbd>, search for
-**Clean current note of done todos**, and run it.
-This does exactly the same cleanup without needing the in-note button.
+The input bar allows you to:
+1. Type a new todo item and click "Add" or press Enter
+2. Clean old completed todos with the "🧹 Clean" button
+3. All todos are added to the note specified in settings (default: "Todo.md")
