@@ -104,8 +104,10 @@ export default class CleanDoneTodosPlugin extends Plugin {
 		const cutoff = moment().startOf("day").subtract(this.settings.daysThreshold, "days");
 
 		// Matches: - [x] ... ✅ YYYY-MM-DD
+		// Support lowercase and uppercase [x]
+		// Checkmark is optional
 		const doneLineRegex =
-			/- \[x\][\s\S]*?✅\s*(\d{4}-\d{2}-\d{2}).*?(?:\n|$)/gi;
+			/- \[[xX]\]\s.*?(?:✅\s*)?(\d{4}-\d{2}-\d{2}).*?(?:\n|$)/g;
 
 		await this.app.vault.process(file, (data) => {
 			const cleaned = data.replace(doneLineRegex, (whole, dateStr: string) => {
