@@ -38,7 +38,7 @@ A completed item must follow the pattern:
 
 ## Configuration
 
-Open **Settings → Community plugins → TODO Manager** and configure:
+Open **Settings → Community plugins → TODO Manager Enhanced** and configure:
 - **Keep the last N days** (e.g. entering `7` keeps everything completed in the previous seven days)
 - **Todo note filename** (the file where new todos will be added, default: "Todo.md")
 
@@ -50,7 +50,6 @@ Add this code block anywhere inside a note:
 
 ```markdown
 ```todo-input
-```
 ```
 
 ![TODO Manager Demo](todo-manager-demo.png)
