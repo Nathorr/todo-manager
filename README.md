@@ -23,7 +23,7 @@ A completed item must follow the pattern:
 
 * Usage doesn't require Tasks plugin format of completed items.
 * Items completed today can be deleted using the cleanup, if *N* is set to 0.
-* Minor UI changes.
+* Minor UI changes.
 
 ## Planned features, not completed yet
 
