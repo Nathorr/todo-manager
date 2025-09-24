@@ -15,7 +15,7 @@ interface CleanDoneTodosSettings {
 	todoNoteFilename: string; // Target note for new todos
 }
 
-const DEFAULT_SETTINGS: CleanDoneTodosSettings = { 
+const DEFAULT_SETTINGS: CleanDoneTodosSettings = {
 	daysThreshold: 5,
 	todoNoteFilename: "Todo.md"
 };
@@ -36,9 +36,9 @@ export default class CleanDoneTodosPlugin extends Plugin {
 		/* Register code block processor for todo-input */
 		this.registerMarkdownCodeBlockProcessor("todo-input", (source, el, ctx) => {
 			const container = el.createDiv("todo-input-bar");
-			
+
 			const inputGroup = container.createDiv("todo-input-group");
-			
+
 			// Input section (2/3 width)
 			const inputSection = inputGroup.createDiv("todo-input-section");
 			const input = inputSection.createEl("input", {
@@ -135,7 +135,7 @@ export default class CleanDoneTodosPlugin extends Plugin {
 
 	async addTodoItem(todoText: string) {
 		const todoFile = this.app.vault.getAbstractFileByPath(this.settings.todoNoteFilename);
-		
+
 		if (!(todoFile instanceof TFile)) {
 			new Notice(`Todo note "${this.settings.todoNoteFilename}" not found. Please check the filename in settings.`);
 			return;
@@ -143,24 +143,23 @@ export default class CleanDoneTodosPlugin extends Plugin {
 
 		await this.app.vault.process(todoFile, (data) => {
 			const todoItem = `- [ ] ${todoText}\n`;
-			
+
 			// Find where to insert (after frontmatter if it exists)
 			const frontmatterInfo = getFrontMatterInfo(data);
 			let insertPosition = 0;
-			
+
 			if (frontmatterInfo.exists) {
 				insertPosition = frontmatterInfo.contentStart;
 			}
-			
+
 			const newContent = data.slice(0, insertPosition) + todoItem + data.slice(insertPosition);
-			new Notice(`Todo added to ${this.settings.todoNoteFilename}`);
 			return newContent;
 		});
 	}
 
 	async cleanTodoFile() {
 		const todoFile = this.app.vault.getAbstractFileByPath(this.settings.todoNoteFilename);
-		
+
 		if (!(todoFile instanceof TFile)) {
 			new Notice(`Todo note "${this.settings.todoNoteFilename}" not found. Please check the filename in settings.`);
 			return;
@@ -200,18 +199,18 @@ class CleanDoneTodosSettingTab extends PluginSettingTab {
 		/* Usage instructions */
 		const info = document.createElement("div");
 		info.addClass("clean-done-todos-info");
-		
+
 		const strong = document.createElement("strong");
 		strong.textContent = "Todo input bar:";
-		
+
 		const br1 = document.createElement("br");
 		const text = document.createTextNode("Add this code block anywhere in a note to get an input bar with add and clean functions:");
-		
+
 		const br2 = document.createElement("br");
 		const code = document.createElement("code");
 		code.addClass("clean-done-todos-code");
 		code.textContent = '```todo-input\n\n```';
-		
+
 		info.appendChild(strong);
 		info.appendChild(br1);
 		info.appendChild(text);
