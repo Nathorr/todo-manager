@@ -110,11 +110,11 @@ export default class CleanDoneTodosPlugin extends Plugin {
 		await this.app.vault.process(file, (data) => {
 			const cleaned = data.replace(doneLineRegex, (whole, dateStr: string) => {
 				const doneDate = moment(dateStr, "YYYY-MM-DD", true);
-				return doneDate.isValid() && doneDate.isBefore(cutoff) ? "" : whole;
+				return doneDate.isValid() && doneDate.isSameOrBefore(cutoff) ? "" : whole;
 			});
 
 			if (cleaned !== data) {
-				new Notice(`Removed tasks completed more than ${this.settings.daysThreshold} day(s) ago.`);
+				new Notice(`Removed tasks completed ${this.settings.daysThreshold} day(s) ago or earlier.`);
 				return cleaned;
 			} else {
 				new Notice("Nothing to clean: no matching lines.");
