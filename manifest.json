@@ -1,10 +1,10 @@
 {
-	"id": "todo-manager",
-	"name": "TODO Manager",
+	"id": "todo-manager-enhanced",
+	"name": "TODO Manager Enhanced",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
 	"description": "Manage todo items with integrated input bar and automatic cleanup of completed tasks older than N days.",
-	"author": "YT",
-	"authorUrl": "https://github.com/yishentu",
+	"author": "Nathorr",
+	"authorUrl": "https://github.com/Nathorr",
 	"isDesktopOnly": false
 }
