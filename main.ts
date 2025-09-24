@@ -103,20 +103,22 @@ export default class CleanDoneTodosPlugin extends Plugin {
 
 		const cutoff = moment().startOf("day").subtract(this.settings.daysThreshold, "days");
 
-		// Matches: - [x] ... ✅ YYYY-MM-DD
-		// Support lowercase and uppercase [x]
-		// Checkmark is optional
-		const doneLineRegex =
-			/- \[[xX]\]\s.*?(?:✅\s*)?(\d{4}-\d{2}-\d{2}).*?(?:\n|$)/g;
+		// Match the entire line including optional date and newline
+		const doneLineRegex = /^- \[[xX]\](?: .*?)?(?:✅\s*(\d{4}-\d{2}-\d{2}))?.*$(\r?\n)?/gm;
 
 		await this.app.vault.process(file, (data) => {
 			const cleaned = data.replace(doneLineRegex, (whole, dateStr: string) => {
-				const doneDate = moment(dateStr, "YYYY-MM-DD", true);
-				return doneDate.isValid() && doneDate.isSameOrBefore(cutoff) ? "" : whole;
+				if (dateStr) {
+					const doneDate = moment(dateStr, "YYYY-MM-DD", true);
+					return doneDate.isValid() && doneDate.isSameOrBefore(cutoff) ? "" : whole;
+				} else {
+					// No date → remove only if daysThreshold = 0
+					return this.settings.daysThreshold === 0 ? "" : whole;
+				}
 			});
 
 			if (cleaned !== data) {
-				new Notice(`Removed tasks completed ${this.settings.daysThreshold} day(s) ago or earlier.`);
+				new Notice(`Removed completed tasks.`);
 				return cleaned;
 			} else {
 				new Notice("Nothing to clean: no matching lines.");
