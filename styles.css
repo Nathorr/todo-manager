@@ -16,8 +16,13 @@
 	border-radius: 8px;
 	max-width: 100%;
 	box-sizing: border-box;
-	box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 	background: var(--background-primary);
+}
+
+/* Adjust for dark mode */
+.theme-dark .todo-input-bar {
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
 }
 
 /* --- Flex layout --- */
