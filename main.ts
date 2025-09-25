@@ -5,14 +5,14 @@ interface TodoManagerEnhancedSettings {
 	daysThreshold: number // Keep items completed within the last N days
 	todoNoteFilename: string // Target note for new todos
 	insertPosition: 'prepend' | 'append' // Where new todos should be inserted
-	autoMoveChecked: boolean // NEW
+	autoMoveChecked: boolean // Automatically move checked items to the bottom of the list
 }
 
 const DEFAULT_SETTINGS: TodoManagerEnhancedSettings = {
 	daysThreshold: 0,
 	todoNoteFilename: '🌟 To-do.md',
 	insertPosition: 'prepend',
-	autoMoveChecked: false,
+	autoMoveChecked: false
 }
 
 /* ---------- Main Plugin ---------- */
@@ -24,30 +24,28 @@ export default class TodoManagerEnhancedPlugin extends Plugin {
 
 		this.addSettingTab(new TodoManagerEnhancedSettingTab(this.app, this))
 
-		/* Register code block processor for todo-input */
+		// Register code block processor for todo-input
 		this.registerMarkdownCodeBlockProcessor('todo-input', (source, el, ctx) => {
 			const container = el.createDiv('todo-input-bar')
 
 			const inputGroup = container.createDiv('todo-input-group')
 
-			// Input section (2/3 width)
 			const inputSection = inputGroup.createDiv('todo-input-section')
 			const input = inputSection.createEl('input', {
 				type: 'text',
 				placeholder: 'Add a new todo item...',
-				cls: 'todo-input',
+				cls: 'todo-input'
 			})
 
 			const addButton = inputSection.createEl('button', {
 				text: 'Add',
-				cls: 'todo-add-btn',
+				cls: 'todo-add-btn'
 			})
 
-			// Clean button section (1/3 width)
 			const cleanSection = inputGroup.createDiv('todo-clean-section')
 			const cleanButton = cleanSection.createEl('button', {
 				text: '🧹 Clean',
-				cls: 'todo-clean-btn',
+				cls: 'todo-clean-btn'
 			})
 
 			// Bind events directly here
@@ -87,8 +85,6 @@ export default class TodoManagerEnhancedPlugin extends Plugin {
 		})
 
 		if (this.settings.autoMoveChecked) {
-			// --- Automation: move checked todos down ---
-
 			// Works in editor mode
 			this.registerEvent(
 				this.app.workspace.on('editor-change', async (editor) => {
@@ -200,7 +196,6 @@ export default class TodoManagerEnhancedPlugin extends Plugin {
 				return data + '\n' + todoItem
 			}
 
-			// Default: prepend (after frontmatter)
 			const frontmatterInfo = getFrontMatterInfo(data)
 			let insertPosition = 0
 			if (frontmatterInfo.exists) {
@@ -230,7 +225,7 @@ class TodoManagerEnhancedSettingTab extends PluginSettingTab {
 		const { containerEl } = this
 		containerEl.empty()
 
-		/* Numeric threshold input */
+		// Numeric threshold input
 		new Setting(containerEl)
 			.setName('Keep the last N days')
 			.setDesc('Only keep items completed within the last N days; older lines will be deleted.')
@@ -247,7 +242,7 @@ class TodoManagerEnhancedSettingTab extends PluginSettingTab {
 					})
 			)
 
-		/* Insert position setting */
+		// Insert position setting
 		new Setting(containerEl)
 			.setName('New todo position')
 			.setDesc('Choose whether new todos are added at the top (after frontmatter) or at the bottom of the file.')
@@ -262,7 +257,7 @@ class TodoManagerEnhancedSettingTab extends PluginSettingTab {
 					})
 			)
 
-		/* Todo note filename setting */
+		// Todo note filename setting
 		new Setting(containerEl)
 			.setName('Todo note filename')
 			.setDesc('The filename of the note where new todo items will be added.')
@@ -289,7 +284,7 @@ class TodoManagerEnhancedSettingTab extends PluginSettingTab {
 				})
 			)
 
-		/* Usage instructions */
+		// Usage instructions
 		const info = document.createElement('div')
 		info.addClass('clean-done-todos-info')
 
