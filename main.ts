@@ -1,4 +1,14 @@
-import { App, Plugin, PluginSettingTab, Setting, moment, Notice, TFile, getFrontMatterInfo } from 'obsidian'
+import {
+	App,
+	Plugin,
+	PluginSettingTab,
+	Setting,
+	moment,
+	Notice,
+	TFile,
+	TAbstractFile,
+	getFrontMatterInfo
+} from 'obsidian'
 
 /* ---------- Settings ---------- */
 interface TodoManagerEnhancedSettings {
@@ -85,19 +95,19 @@ export default class TodoManagerEnhancedPlugin extends Plugin {
 		})
 
 		if (this.settings.autoMoveChecked) {
-			// Works in editor mode
+			// Edit mode
 			this.registerEvent(
-				this.app.workspace.on('editor-change', async (editor) => {
+				this.app.workspace.on('editor-change', async () => {
 					const file = this.getTodoFile()
 					if (!file) return
 					await this.autoMoveChecked(file)
 				})
 			)
 
-			// Works in reading mode
+			// Reading mode
 			this.registerEvent(
 				this.app.vault.on('modify', async (file) => {
-					if (file instanceof TFile && file.path === this.settings.todoNoteFilename) {
+					if (file.path === this.settings.todoNoteFilename) {
 						await this.autoMoveChecked(file)
 					}
 				})
@@ -152,8 +162,8 @@ export default class TodoManagerEnhancedPlugin extends Plugin {
 		}
 	}
 
-	private async autoMoveChecked(file: TFile) {
-		if (!file) return
+	private async autoMoveChecked(file: TAbstractFile | null) {
+		if (!(file instanceof TFile)) return
 
 		await this.app.vault.process(file, (data) => {
 			const lines = data.split(/\r?\n/)
@@ -172,7 +182,7 @@ export default class TodoManagerEnhancedPlugin extends Plugin {
 				}
 			}
 
-			// Keep non-todo lines where they are, but move checked todos below unchecked
+			// Keep non-todo lines as-is, move checked todos below unchecked
 			return [...others, ...unchecked, ...checked].join('\n')
 		})
 	}
