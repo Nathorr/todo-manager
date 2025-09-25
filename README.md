@@ -12,6 +12,12 @@ A completed item must follow the pattern:
 - [x] Task description
 ```
 
+or
+
+```markdown
+- [x] Task description ✅ YYYY-MM-DD
+```
+
 ## Features
 
 * **Todo input bar** – Add new todo items directly from any note with an embedded input interface.
@@ -21,13 +27,11 @@ A completed item must follow the pattern:
 
 ## Additional features to the original
 
-* Usage doesn't require Tasks plugin format of completed items.
+* Usage doesn't require Tasks plugin format of completed items. Completed items without completion date are always removed manually.
 * Items completed today can be deleted using the cleanup, if *N* is set to 0.
-* Minor UI changes.
-
-## Planned features, not completed yet
-
+* There is a setting to add items to either a top or bottom of the file.
 * Automatically move completed items to the bottom of the list.
+* Minor UI changes.
 
 ## Installation
 
