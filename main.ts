@@ -12,6 +12,7 @@ const DEFAULT_SETTINGS: TodoManagerEnhancedSettings = {
 	daysThreshold: 0,
 	todoNoteFilename: '🌟 To-do.md',
 	insertPosition: 'prepend',
+	autoMoveChecked: false,
 }
 
 /* ---------- Main Plugin ---------- */
@@ -84,6 +85,30 @@ export default class TodoManagerEnhancedPlugin extends Plugin {
 				}
 			})
 		})
+
+		if (this.settings.autoMoveChecked) {
+			// --- Automation: move checked todos down ---
+
+			// Works in editor mode
+			this.registerEvent(
+				this.app.workspace.on('editor-change', async (editor) => {
+					const file = this.getTodoFile()
+					if (!file) return
+					await this.autoMoveChecked(file)
+				})
+			)
+
+			// Works in reading mode
+			this.registerEvent(
+				this.app.vault.on('modify', async (file) => {
+					if (file instanceof TFile && file.path === this.settings.todoNoteFilename) {
+						await this.autoMoveChecked(file)
+					}
+				})
+			)
+		}
+	}
+
 	/* ---------- File helpers ---------- */
 	private getTodoFile(): TFile | null {
 		const file = this.app.vault.getAbstractFileByPath(this.settings.todoNoteFilename)
@@ -131,20 +156,29 @@ export default class TodoManagerEnhancedPlugin extends Plugin {
 		}
 	}
 
-				} else {
-					// No date → remove only if daysThreshold = 0
-					return this.settings.daysThreshold === 0 ? "" : whole;
-				}
-			});
+	private async autoMoveChecked(file: TFile) {
+		if (!file) return
 
-			if (cleaned !== data) {
-				new Notice(`Removed completed tasks.`);
-				return cleaned;
-			} else {
-				new Notice("Nothing to clean: no matching lines.");
-				return data;
+		await this.app.vault.process(file, (data) => {
+			const lines = data.split(/\r?\n/)
+
+			const unchecked: string[] = []
+			const checked: string[] = []
+			const others: string[] = []
+
+			for (const line of lines) {
+				if (/^- \[ \]/.test(line)) {
+					unchecked.push(line)
+				} else if (/^- \[[xX]\]/.test(line)) {
+					checked.push(line)
+				} else {
+					others.push(line)
+				}
 			}
-		});
+
+			// Keep non-todo lines where they are, but move checked todos below unchecked
+			return [...others, ...unchecked, ...checked].join('\n')
+		})
 	}
 
 	/* ---------- Settings I/O ---------- */
@@ -241,6 +275,20 @@ class TodoManagerEnhancedSettingTab extends PluginSettingTab {
 						await this.plugin.saveSettings()
 					})
 			)
+
+		new Setting(containerEl)
+			.setName('Auto-move checked todos')
+			.setDesc('Automatically move checked todos to the bottom of the list (above other checked items).')
+			.addToggle((toggle) =>
+				toggle.setValue(this.plugin.settings.autoMoveChecked).onChange(async (value) => {
+					this.plugin.settings.autoMoveChecked = value
+					await this.plugin.saveSettings()
+					new Notice(
+						`Auto-move checked todos ${value ? 'enabled' : 'disabled'}. Restart or reload the plugin to apply.`
+					)
+				})
+			)
+
 		/* Usage instructions */
 		const info = document.createElement('div')
 		info.addClass('clean-done-todos-info')
