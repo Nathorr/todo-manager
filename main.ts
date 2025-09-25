@@ -4,11 +4,14 @@ import { App, Plugin, PluginSettingTab, Setting, moment, Notice, TFile, getFront
 interface TodoManagerEnhancedSettings {
 	daysThreshold: number // Keep items completed within the last N days
 	todoNoteFilename: string // Target note for new todos
+	insertPosition: 'prepend' | 'append' // Where new todos should be inserted
+	autoMoveChecked: boolean // NEW
 }
 
 const DEFAULT_SETTINGS: TodoManagerEnhancedSettings = {
 	daysThreshold: 0,
 	todoNoteFilename: '🌟 To-do.md',
+	insertPosition: 'prepend',
 }
 
 /* ---------- Main Plugin ---------- */
@@ -128,19 +131,20 @@ export default class TodoManagerEnhancedPlugin extends Plugin {
 		if (!todoFile) return
 
 		await this.app.vault.process(todoFile, (data) => {
-			const todoItem = `- [ ] ${todoText}\n`;
+			const todoItem = `- [ ] ${todoText}\n`
 
-			// Find where to insert (after frontmatter if it exists)
-			const frontmatterInfo = getFrontMatterInfo(data);
-			let insertPosition = 0;
-
-			if (frontmatterInfo.exists) {
-				insertPosition = frontmatterInfo.contentStart;
+			if (this.settings.insertPosition === 'append') {
+				return data + '\n' + todoItem
 			}
 
-			const newContent = data.slice(0, insertPosition) + todoItem + data.slice(insertPosition);
-			return newContent;
-		});
+			// Default: prepend (after frontmatter)
+			const frontmatterInfo = getFrontMatterInfo(data)
+			let insertPosition = 0
+			if (frontmatterInfo.exists) {
+				insertPosition = frontmatterInfo.contentStart
+			}
+			return data.slice(0, insertPosition) + todoItem + data.slice(insertPosition)
+		})
 	}
 
 	async cleanTodoFile() {
@@ -182,6 +186,21 @@ class TodoManagerEnhancedSettingTab extends PluginSettingTab {
 							this.plugin.settings.daysThreshold = n
 							await this.plugin.saveSettings()
 						}
+					})
+			)
+
+		/* Insert position setting */
+		new Setting(containerEl)
+			.setName('New todo position')
+			.setDesc('Choose whether new todos are added at the top (after frontmatter) or at the bottom of the file.')
+			.addDropdown((drop) =>
+				drop
+					.addOption('prepend', 'Top of file (default)')
+					.addOption('append', 'Bottom of file')
+					.setValue(this.plugin.settings.insertPosition)
+					.onChange(async (value: 'prepend' | 'append') => {
+						this.plugin.settings.insertPosition = value
+						await this.plugin.saveSettings()
 					})
 			)
 
