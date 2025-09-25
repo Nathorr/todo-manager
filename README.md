@@ -1,10 +1,16 @@
 **Repository**: [https://github.com/nathorr/todo-manager](https://github.com/nathorr/todo-manager)
-
 **Fork of** [https://github.com/yishentu/todo-manager](https://github.com/yishentu/todo-manager)
 
 # TODO Manager Enhanced
 
-Manage todo items with integrated input bar and automatic cleanup of completed tasks older than **N** days.
+An [Obsidian](https://obsidian.md) plugin that helps you keep your todo lists clean and organized:  
+
+- **Clean completed tasks** after they’re older than _N_ days.  
+- **Quickly add new todos** via an inline input bar.  
+- **Auto-move checked items** to the bottom of your todo list (above other checked items).  
+- Works on both **desktop and mobile**.
+
+---
 
 A completed item must follow the pattern:
 
@@ -18,12 +24,26 @@ or
 - [x] Task description ✅ YYYY-MM-DD
 ```
 
+---
+
 ## Features
 
-* **Todo input bar** – Add new todo items directly from any note with an embedded input interface.
-* **Age-based cleanup** – keeps only items finished within the last *N* days.
-* **Integrated functionality** – combine todo input and cleanup in a single interface.
-* **Non-destructive** – affects only the specified todo note; nothing else in the vault is touched.
+- **Todo input bar**  
+  Insert a code block into any note:
+```markdown
+```todo-input
+```
+  This adds a neat input bar with an **Add** button and a **Clean** button.
+
+- **Customizable cleanup**  
+- Keep only items completed within the last _N_ days (configurable).  
+- Completed items older than the threshold are automatically removed.  
+
+- **Auto-reorder checked items**  
+- When you check a box in your configured todo file, the line automatically moves to the bottom of the unchecked list.
+
+- **Responsive design**  
+- Works on mobile and desktop with a clean, responsive UI.  
 
 ## Additional features to the original
 
@@ -33,37 +53,33 @@ or
 * Automatically move completed items to the bottom of the list.
 * Minor UI changes.
 
+---
+
+## Settings
+
+- **Keep the last N days** → Number of days to keep completed todos before auto-cleaning.  
+- **Todo note filename** → The file where new todos are added.  
+
+---
+
 ## Installation
 
 1. Clone or copy the plugin folder into
-   `YOUR_VAULT/.obsidian/plugins/todo-manager`.
+   `YOUR_VAULT/.obsidian/plugins/` directory.
 2. Enable "Third-party plugins" in **Settings → Community plugins**.
-3. Find **TODO Manager Enhanced** in the list and toggle it on.
-
-## Configuration
-
-Open **Settings → Community plugins → TODO Manager Enhanced** and configure:
-- **Keep the last N days** (e.g. entering `7` keeps everything completed in the previous seven days)
-- **Todo note filename** (the file where new todos will be added, default: "Todo.md")
+3. Reload Obsidian and enable **TODO Manager Enhanced** in settings.
 
 ## Usage
 
 ### Todo Input Bar
 
-Add this code block anywhere inside a note:
+1. Add the todo input bar anywhere in a note using the code block:
 
 ```markdown
 ```todo-input
 ```
 
-![TODO Manager Demo](todo-manager-demo.png)
-
-This creates an input bar with:
-- **Text input** – Type your new todo item
-- **Add button** – Adds the todo to your specified todo note file
-- **Clean button** – Removes completed todos older than N days from the todo note
-
-The input bar allows you to:
-1. Type a new todo item and click "Add" or press Enter
-2. Clean old completed todos with the "🧹 Clean" button
-3. All todos are added to the note specified in settings (default: "Todo.md")
+2. Configure your **main todo file** in settings.  
+3. Add new tasks quickly via the input bar.  
+4. Clean up old completed tasks using the Clean button or automatically.  
+5. Checked items are automatically moved below unchecked ones in your main todo file.
