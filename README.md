@@ -1,4 +1,5 @@
 **Repository**: [https://github.com/nathorr/todo-manager](https://github.com/nathorr/todo-manager)
+
 **Fork of** [https://github.com/yishentu/todo-manager](https://github.com/yishentu/todo-manager)
 
 # TODO Manager Enhanced
@@ -28,30 +29,22 @@ or
 
 ## Features
 
-- **Todo input bar**  
-  Insert a code block into any note:
+* **Todo input bar**  
+   * This adds a neat input bar with an **Add** button and a **Clean** button.
+   * Insert a code block into any note:
 ```markdown
 ```todo-input
 ```
-  This adds a neat input bar with an **Add** button and a **Clean** button.
 
-- **Customizable cleanup**  
-- Keep only items completed within the last _N_ days (configurable).  
-- Completed items older than the threshold are automatically removed.  
+* **Customizable cleanup**  
+   * Keep only items completed within the last _N_ days (configurable).  
+   * Completed items older than the threshold are automatically removed.  
 
-- **Auto-reorder checked items**  
-- When you check a box in your configured todo file, the line automatically moves to the bottom of the unchecked list.
+* **Auto-reorder checked items**  
+   * When you check a box in your configured todo file, the line automatically moves to the bottom of the unchecked list.
 
-- **Responsive design**  
-- Works on mobile and desktop with a clean, responsive UI.  
-
-## Additional features to the original
-
-* Usage doesn't require Tasks plugin format of completed items. Completed items without completion date are always removed manually.
-* Items completed today can be deleted using the cleanup, if *N* is set to 0.
-* There is a setting to add items to either a top or bottom of the file.
-* Automatically move completed items to the bottom of the list.
-* Minor UI changes.
+* **Responsive design**  
+   * Works on mobile and desktop with a clean, responsive UI.  
 
 ---
 
@@ -70,8 +63,6 @@ or
 3. Reload Obsidian and enable **TODO Manager Enhanced** in settings.
 
 ## Usage
-
-### Todo Input Bar
 
 1. Add the todo input bar anywhere in a note using the code block:
 
