@@ -84,6 +84,16 @@ export default class TodoManagerEnhancedPlugin extends Plugin {
 				}
 			})
 		})
+	/* ---------- File helpers ---------- */
+	private getTodoFile(): TFile | null {
+		const file = this.app.vault.getAbstractFileByPath(this.settings.todoNoteFilename)
+		if (!(file instanceof TFile)) {
+			new Notice(
+				`Todo note "${this.settings.todoNoteFilename}" not found. Please check the filename in settings.`
+			)
+			return null
+		}
+		return file
 	}
 
 	/* ---------- Cleanup logic ---------- */
@@ -92,16 +102,35 @@ export default class TodoManagerEnhancedPlugin extends Plugin {
 			return
 		}
 
-		const cutoff = moment().startOf("day").subtract(this.settings.daysThreshold, "days");
-
-		// Match the entire line including optional date and newline
-		const doneLineRegex = /^- \[[xX]\](?: .*?)?(?:✅\s*(\d{4}-\d{2}-\d{2}))?.*$(\r?\n)?/gm;
+		const cutoff = moment().startOf('day').subtract(this.settings.daysThreshold, 'days')
+		const doneLineRegex = /^- \[[xX]\].*?(?:✅\s*(\d{4}-\d{2}-\d{2}))?.*(?:\r?\n|$)/gm
+		let removedCount = 0
 
 		await this.app.vault.process(file, (data) => {
 			const cleaned = data.replace(doneLineRegex, (whole, dateStr: string) => {
 				if (dateStr) {
-					const doneDate = moment(dateStr, "YYYY-MM-DD", true);
-					return doneDate.isValid() && doneDate.isSameOrBefore(cutoff) ? "" : whole;
+					const doneDate = moment(dateStr, 'YYYY-MM-DD', true)
+					if (doneDate.isValid() && doneDate.isSameOrBefore(cutoff)) {
+						removedCount++
+						return ''
+					}
+				} else if (this.settings.daysThreshold === 0) {
+					removedCount++
+					return ''
+				}
+				return whole
+			})
+
+			return cleaned
+		})
+
+		if (removedCount > 0) {
+			new Notice(`Removed ${removedCount} completed task(s).`)
+		} else {
+			new Notice('Nothing to clean: no matching lines.')
+		}
+	}
+
 				} else {
 					// No date → remove only if daysThreshold = 0
 					return this.settings.daysThreshold === 0 ? "" : whole;
@@ -148,14 +177,9 @@ export default class TodoManagerEnhancedPlugin extends Plugin {
 	}
 
 	async cleanTodoFile() {
-		const todoFile = this.app.vault.getAbstractFileByPath(this.settings.todoNoteFilename);
-
-		if (!(todoFile instanceof TFile)) {
-			new Notice(`Todo note "${this.settings.todoNoteFilename}" not found. Please check the filename in settings.`);
-			return;
-		}
-
-		await this.cleanFile(todoFile);
+		const todoFile = this.getTodoFile()
+		if (!todoFile) return
+		await this.cleanFile(todoFile)
 	}
 }
 
