@@ -62,6 +62,8 @@ or
 2. Enable "Third-party plugins" in **Settings → Community plugins**.
 3. Reload Obsidian and enable **TODO Manager Enhanced** in settings.
 
+---
+
 ## Usage
 
 1. Add the todo input bar anywhere in a note using the code block:
