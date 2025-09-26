@@ -15,6 +15,15 @@ const DEFAULT_SETTINGS: TodoSweepSettings = {
     autoMoveChecked: false
 }
 
+/* ---------- Helper ---------- */
+function debounce<T extends (...args: any[]) => void>(func: T, wait: number) {
+    let timeout: number | null = null
+    return (...args: Parameters<T>) => {
+        if (timeout) window.clearTimeout(timeout)
+        timeout = window.setTimeout(() => func(...args), wait)
+    }
+}
+
 /* ---------- Main Plugin ---------- */
 export default class TodoSweepPlugin extends Plugin {
     settings: TodoSweepSettings
@@ -85,14 +94,14 @@ export default class TodoSweepPlugin extends Plugin {
         })
 
         if (this.settings.autoMoveChecked) {
-            // Works in editor mode
-            this.registerEvent(
-                this.app.workspace.on('editor-change', async (editor) => {
+            // Debounced auto-move in editor mode
+            const debouncedAutoMove = debounce(async () => {
                     const file = this.getTodoFile()
                     if (!file) return
                     await this.autoMoveChecked(file)
-                })
-            )
+            }, 500)
+
+            this.registerEvent(this.app.workspace.on('editor-change', debouncedAutoMove))
 
             // Works in reading mode
             this.registerEvent(
