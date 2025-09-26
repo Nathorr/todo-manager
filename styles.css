@@ -1,117 +1,123 @@
-.clean-done-todos-info {
-	margin-top: 1.2em;
-	line-height: 1.6;
+.todo-sweep-info {
+    margin-top: 1.2em;
+    line-height: 1.6;
 }
 
-.clean-done-todos-code {
-	display: block;
-	margin-top: 0.6em;
+.todo-sweep-code {
+    display: block;
+    margin-top: 0.6em;
 }
 
 /* --- Input bar container --- */
 .todo-input-bar {
-	margin: 1em 0;
-	padding: 1em;
-	border: 1px solid var(--text-faint);
-	border-radius: 8px;
-	max-width: 100%;
-	box-sizing: border-box;
-	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-	background: var(--background-primary);
+    margin: 1em 0;
+    padding: 1em;
+    border: 1px solid var(--text-faint);
+    border-radius: 8px;
+    max-width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    background: var(--background-primary);
 }
 
 /* Adjust for dark mode */
 .theme-dark .todo-input-bar {
-	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
 }
 
 /* --- Flex layout --- */
 .todo-input-group {
-	display: flex;
-	gap: 0.75em;
-	align-items: stretch;
+    display: flex;
+    gap: 0.75em;
+    align-items: stretch;
 }
 
 .todo-input-section {
-	flex: 68;
-	display: flex;
-	gap: 0.5em;
-	align-items: center;
+    flex: 68;
+    display: flex;
+    gap: 0.5em;
+    align-items: center;
 }
 
 .todo-clean-section {
-	flex: 32;
-	display: flex;
-	align-items: center;
+    flex: 32;
+    display: flex;
+    align-items: center;
 }
 
 /* --- Input field --- */
 .todo-input {
-	flex: 1;
-	padding: 0.5em 0.6em;
-	border: 1px solid var(--text-faint);
-	border-radius: 6px;
-	color: var(--text-normal);
-	font-size: 0.9em;
-	transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    flex: 1;
+    padding: 0.5em 0.6em;
+    border: 1px solid var(--text-faint);
+    border-radius: 6px;
+    color: var(--text-normal);
+    font-size: 0.9em;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
 .todo-input:focus {
-	outline: none;
-	border-color: var(--interactive-accent);
-	box-shadow: 0 0 0 2px var(--interactive-accent-hover);
+    outline: none;
+    border-color: var(--interactive-accent);
+    box-shadow: 0 0 0 2px var(--interactive-accent-hover);
 }
 
 /* --- Add button (primary) --- */
 .todo-add-btn {
-	padding: 0.5em 1em;
-	border: none;
-	border-radius: 6px;
-	background: var(--interactive-accent);
-	color: white;
-	cursor: pointer;
-	font-size: 0.9em;
-	white-space: nowrap;
-	transition: background 0.2s ease, transform 0.1s ease;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 6px;
+    background: var(--interactive-accent);
+    color: white;
+    cursor: pointer;
+    font-size: 0.9em;
+    white-space: nowrap;
+    transition:
+        background 0.2s ease,
+        transform 0.1s ease;
 }
 
 .todo-add-btn:hover {
-	background: var(--interactive-accent-hover);
+    background: var(--interactive-accent-hover);
 }
 
 .todo-add-btn:active {
-	transform: scale(0.97);
+    transform: scale(0.97);
 }
 
 /* --- Clean button (secondary) --- */
 .todo-clean-btn {
-	width: 100%;
-	padding: 0.5em 1em;
-	border: 1px solid var(--background-modifier-border);
-	border-radius: 6px;
-	background: var(--background-secondary);
-	color: var(--text-normal);
-	cursor: pointer;
-	font-size: 0.9em;
-	white-space: nowrap;
-	transition: background 0.2s ease, transform 0.1s ease;
+    width: 100%;
+    padding: 0.5em 1em;
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 6px;
+    background: var(--background-secondary);
+    color: var(--text-normal);
+    cursor: pointer;
+    font-size: 0.9em;
+    white-space: nowrap;
+    transition:
+        background 0.2s ease,
+        transform 0.1s ease;
 }
 
 .todo-clean-btn:hover {
-	background: var(--background-modifier-hover);
-	border-color: var(--background-modifier-border-focus);
+    background: var(--background-modifier-hover);
+    border-color: var(--background-modifier-border-focus);
 }
 
 .todo-clean-btn:active {
-	transform: scale(0.97);
+    transform: scale(0.97);
 }
 
 /* --- Mobile responsive layout --- */
 @media (max-width: 500px) {
-	.todo-input-group {
-		flex-direction: column;
-	}
-	.todo-clean-section {
-		width: 100%;
-	}
+    .todo-input-group {
+        flex-direction: column;
+    }
+    .todo-clean-section {
+        width: 100%;
+    }
 }

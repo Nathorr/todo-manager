@@ -1,8 +1,6 @@
-**Repository**: [https://github.com/nathorr/todo-manager](https://github.com/nathorr/todo-manager)
-
 **Fork of** [https://github.com/yishentu/todo-manager](https://github.com/yishentu/todo-manager)
 
-# TODO Manager Enhanced
+# Todo Sweep
 
 An [Obsidian](https://obsidian.md) plugin that helps you keep your todo lists clean and organized:  
 
@@ -60,7 +58,7 @@ or
 1. Clone or copy the plugin folder into
    `YOUR_VAULT/.obsidian/plugins/` directory.
 2. Enable "Third-party plugins" in **Settings → Community plugins**.
-3. Reload Obsidian and enable **TODO Manager Enhanced** in settings.
+3. Reload Obsidian and enable **Todo Sweep** in settings.
 
 ---
 
@@ -71,6 +69,7 @@ or
 ```markdown
 ```todo-input
 ```
+![Todo Sweep demo](demo.png)
 
 2. Configure your **main todo file** in settings.  
 3. Add new tasks quickly via the input bar.  

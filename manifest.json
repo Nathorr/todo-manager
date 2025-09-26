@@ -1,10 +1,10 @@
 {
-	"id": "todo-manager-enhanced",
-	"name": "TODO Manager Enhanced",
-	"version": "1.0.0",
-	"minAppVersion": "0.15.0",
-	"description": "Manage todo items with integrated input bar and automatic cleanup of completed tasks older than N days.",
-	"author": "Nathorr",
-	"authorUrl": "https://github.com/Nathorr",
-	"isDesktopOnly": false
+    "id": "todo-sweep",
+    "name": "Todo Sweep",
+    "version": "1.0.0",
+    "minAppVersion": "0.15.0",
+    "description": "Obsidian plugin that helps you keep your todo lists clean and organized.",
+    "author": "Nathorr",
+    "authorUrl": "https://github.com/Nathorr",
+    "isDesktopOnly": false
 }
